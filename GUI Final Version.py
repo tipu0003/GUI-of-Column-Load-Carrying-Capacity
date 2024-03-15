@@ -36,15 +36,15 @@ y = data.iloc[:, -1]
 # Define base models
 base_models = [
     ('lr', LinearRegression()),
-    ('svr', SVR()),
-    ('kr', KernelRidge()),
+    ('svr', SVR(C=10,kernel='rbf',epsilon=0.1)),
+    ('kr', KernelRidge(alpha=0.1,kernel='rbf')),
     ('gpr', GaussianProcessRegressor()),
-    ('dtr', DecisionTreeRegressor()),
-    ('rfr', RandomForestRegressor()),
-    ('gbr', GradientBoostingRegressor()),
-    ('xgbr', xgb.XGBRegressor()),
-    ('ngbr', NGBRegressor()),
-    ('mlpr', MLPRegressor()),
+    ('dtr', DecisionTreeRegressor(max_depth=10, min_samples_split=2, min_samples_leaf=2)),
+    ('rfr', RandomForestRegressor(n_estimators=500, max_features='sqrt', max_depth=10)),
+    ('gbr', GradientBoostingRegressor(n_estimators=1000, learning_rate=0.05, max_depth=5)),
+    ('xgbr', xgb.XGBRegressor(n_estimators=500, learning_rate=0.1, max_depth=6,colsample_bytree=0.7)),
+    ('ngbr', NGBRegressor(n_estimators=500, learning_rate=0.1)),
+    ('mlpr', MLPRegressor(hidden_layer_sizes=(100,100), activation='relu', learning_rate_init=0.001, max_iter=1000)),
 ]
 
 # Filter out ('ngbr', NGBRegressor()) from base_models when defining stacked_model
@@ -154,18 +154,18 @@ canvas1 = tk.Canvas(root, width=550, height=600)
 canvas1.configure(background='#e9ecef')
 canvas1.pack()
 
-label0 = tk.Label(root, text='Load carrying capacity of column', font=('Times New Roman', 15, 'bold'), bg='#e9ecef')
-canvas1.create_window(70, 20, anchor="w", window=label0)
-
-label_phd = tk.Label(root, text='Developed by: Mr. Rupesh Kumar Tipu\n K. R. Mangalam University, India.\n '
-                                'tipu0003@gmail.com',
-                     font=('Futura Md Bt', 12), bg='#e9ecef')
-
-canvas1.create_window(100, 60, anchor="w", window=label_phd)
-
-label_input = tk.Label(root, text='Input Variables', font=('Times New Roman', 12, 'bold', 'italic', 'underline'),
-                       bg='#e9ecef')
-canvas1.create_window(20, 90, anchor="w", window=label_input)
+# label0 = tk.Label(root, text='Load carrying capacity of column', font=('Times New Roman', 15, 'bold'), bg='#e9ecef')
+# canvas1.create_window(70, 20, anchor="w", window=label0)
+#
+# label_phd = tk.Label(root, text='Developed by: Mr. Rupesh Kumar Tipu\n K. R. Mangalam University, India.\n '
+#                                 'tipu0003@gmail.com',
+#                      font=('Futura Md Bt', 12), bg='#e9ecef')
+#
+# canvas1.create_window(100, 60, anchor="w", window=label_phd)
+#
+# label_input = tk.Label(root, text='Input Variables', font=('Times New Roman', 12, 'bold', 'italic', 'underline'),
+#                        bg='#e9ecef')
+# canvas1.create_window(20, 90, anchor="w", window=label_input)
 
 # Labels and entry boxes
 labels = ['Area of concrete portions  (mm\u00b2)',
@@ -180,7 +180,7 @@ labels = ['Area of concrete portions  (mm\u00b2)',
 
 entry_boxes = []
 for i, label_text in enumerate(labels):
-    label = tk.Label(root, text=unicodeit.replace(label_text), font=('Times New Roman', 12, 'italic'), bg='#e9ecef',
+    label = tk.Label(root, text=unicodeit.replace(label_text), font=('Times New Roman', 15, 'italic'), bg='#e9ecef',
                      pady=5)
     canvas1.create_window(20, 120 + i * 30, anchor="w", window=label)
 
